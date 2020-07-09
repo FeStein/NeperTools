@@ -221,3 +221,139 @@ class FEAPWriter:
             else:
                 raise ValueError('Unkown number of martensite variants')
         print('Printed Mesh')
+
+
+class NucleusWriter():
+    '''
+    Appends initial conditions as well as solve script to before generated FEAP
+    input script. Note that the prior input skript needs to be created before 
+    '''
+    def __init__(self,filename,nucleus_model):
+        self.filename = filename
+        self.nucleus_model = nucleus_model
+        
+    def write_np(self):
+        if self.nucleus_model.mat_variants == 3: #2D Variants
+            with open(self.filename,'a') as f:
+                #Initial Conditions
+                f.write("! -------------------------------------------- \n")
+                f.write("!              INITIAL CONDITIONS              \n")
+                f.write("! -------------------------------------------- \n")
+                f.write(" \n")
+                f.write("batch \n")
+                f.write("  OPTI \n")
+                f.write("  INITial,disp \n")
+                f.write("end \n")
+                f.write("  " + str(self.nucleus_model.mesh.nodes[0].id) + " 0.0 0.0 0 0 \n")
+                f.write("  " + str(self.nucleus_model.mesh.nodes[-1].id) + " 0 0.0 0.0 0 0 \n")
+                
+                written_node_id_set = set()
+                for NP in self.nucleus_model.np_list:
+                    for node in NP.nodes:
+                        if NP.mvariant == 1:
+                            if node.id not in written_node_id_set:
+                                written_node_id_set.add(node.id)
+                                f.write("  " + str(node.id) + " 0 0.0 0.0 op 0 \n")
+                        if NP.mvariant == 2:
+                            if node.id not in written_node_id_set:
+                                written_node_id_set.add(node.id)
+                                f.write("  " + str(node.id) + " 0 0.0 0.0 0 op \n")
+                
+                #Solve Skript 
+                f.write('\n')
+                f.write('Batch\n')
+                f.write('  ENERgy\n')
+                f.write('  TPLOT\n')
+                f.write('end\n')
+                f.write('energy\n')
+                f.write('\n')
+                f.write('BATCh\n')
+                f.write('    TRANs,BACK\n')
+                f.write('    DT,,2e-12 \n')
+                f.write('    LOOP,INIT,10\n')
+                f.write('        UTANG,,1\n')
+                f.write('    NEXT,INIT\n')
+                f.write('    !EPRINT\n')
+                f.write('    STRE,NODE\n')
+                f.write('    PVIEw,TIME\n')
+                f.write('    AUTO, DT, 1e-12,1e-3 \n')
+                f.write('    AUTO, TIME, 6, 10, 40\n')
+                f.write('    LOOP,print,30\n')
+                f.write('        LOOP,TIME,10\n')
+                f.write('            TIME\n')
+                f.write('            LOOP,SOLV,40\n')
+                f.write('            UTANG,,1\n')
+                f.write('            !EPRINT\n')
+                f.write('            NEXT,SOLV\n')
+                f.write('            STRE,NODE\n')
+                f.write('            PLOT,WIPE\n')
+                f.write('            PLOT,CONT,3\n')
+                f.write('            NEXT,TIME\n')
+                f.write('        PVIEw,TIME\n')
+                f.write('    NEXT,print\n')
+                f.write('END batch\n')
+    
+        if self.nucleus_model.mat_variants == 3:
+            with open(self.filename,'a') as f:
+                f.write("!-----------------------------------------\n")
+                f.write("!        Initial Conditions               \n")
+                f.write("!-----------------------------------------\n")
+                f.write("\n")
+                f.write("batch\n")
+                f.write("  OPTI\n")
+                f.write("  INITial,disp\n")
+                f.write("end\n")
+                #f.write('1 1 0 0 Ts 0 0 \n')
+                #f.write('132651 0 0 0 Ts 0 0\n')
+                written_node_set = set()
+                for np in self.nucleus_model.np_list:
+                    for node in np.nodes:
+                        if node not in written_node_set:
+                            suffix = "0 "*(np.mvariant-1) + "op " + "0 "*(self.nucleus_model.mat_variants - np.mvariant)
+                            f.write("  " + str(node.id) + " 0 0.0 0.0 0.0 Ts " + suffix + "\n")
+                            written_node_set.add(node)
+                f.write('\n\n\n')
+                f.write('interactive\n')
+                f.write('\n')
+                f.write('batch\n')
+                f.write('    GRAPh,,96\n')
+                f.write('    OUTDomains\n')
+                f.write('end\n')
+                f.write('\n')
+                f.write('stop\n')
+            #12 martensite variants
+        elif self.nucleus_model.mat_variants == 12:
+            with open(self.filename,'a') as f:
+                f.write("!-----------------------------------------\n")
+                f.write("!        Initial Conditions               \n")
+                f.write("!-----------------------------------------\n")
+                f.write("\n")
+                f.write("batch\n")
+                f.write("  OPTI\n")
+                f.write("  INITial,disp\n")
+                f.write("end\n")
+                written_node_set = set()
+                for np in self.nucleus_model.np_list:
+                    for node in np.nodes:
+                        if node not in written_node_set:
+                            if np.mvariant == 12:
+                                f.write("  " + str(node.id) + " 0 0.0 0.0 0.0 0 0 0 0 0 0 0 0 0 0 0 \n")
+                                f.write("    op\n")
+                            else:
+                                suffix = "0 "*(np.mvariant-1) + "op " + "0 "*(self.nucleus_model.mat_variants - np.mvariant - 1)
+                                f.write("  " + str(node.id) + " 0 0.0 0.0 0.0 " + suffix + "\n")
+                                f.write("    0\n")
+                            written_node_set.add(node)
+                f.write('\n\n\n')
+                f.write('interactive\n')
+                f.write('\n')
+                f.write('batch\n')
+                f.write('    GRAPh,,108\n')
+                f.write('    OUTDomains\n')
+                f.write('end\n')
+                f.write('\n')
+                f.write('stop\n')
+        else:
+            raise ValueError("Unknown number of martensite variants")
+
+        print('Printed initial conditions')
