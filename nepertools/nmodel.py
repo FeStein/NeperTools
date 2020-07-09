@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import random 
+import json
 #General Definitions
 class Nucleuspoint_2D():
     
@@ -164,14 +165,18 @@ class Grain():
         y_values = [node.y for node in self.triple_node_list]
         plt.plot(x_values,y_values,'.',c='r',ms=5)
         
-        plt.xlim(-0.02,1.02)
+        plt.xlim(-0.02,1.02)                                                                                                                                                                        
         plt.ylim(-0.02,1.02)
         plt.show()
 
 
-class NucleusModel():
+class NucleusModel2D():
     
-    def __init__(self,mesh,tf):
+    def __init__(self,config_filename,mesh,tf):
+        with open(config_filename) as config_file:
+            cf = json.load(config_file) 
+        self.cf = cf
+        self.mat_variants = 2
         self.mesh = mesh
         self.tf = tf
         
@@ -190,7 +195,12 @@ class NucleusModel():
                 if i == j: continue
                 grain.node_id_set = grain.node_id_set - rem_set
                 
-    def create_model(self,radius,quantity,martvariants,grain_prob,bound_prob,triple_prob):
+    def create_model(self):
+        radius = self.cf['nmodel']['radius']
+        quantity = self.cf['nmodel']['quantity']
+        grain_prob = self.cf['nmodel']['grain_prob']
+        bound_prob = self.cf['nmodel']['bound_prob']
+        triple_prob = self.cf['nmodel']['triple_prob']
         total_nodes = sum([len(grain.node_list) for grain in self.grain_list])
         total_triple = sum([len(grain.triple_node_list) for grain in self.grain_list])
         if triple_prob == True:
