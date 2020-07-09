@@ -16,6 +16,7 @@ class FEAPWriter:
         self.mesh = mesh
         self.mat_list = mat_list
         self.mat_variants = cf['general']['mat_variants']
+        self.user_element_number = cf['general']['user_element_number']
 
     def write_materials(self):
         L = self.cf['constants']['L']
@@ -38,7 +39,7 @@ class FEAPWriter:
         scale = self.cf['general']['scale']
         with open(self.filename,"w+") as f:
             if self.mat_variants == 3 or self.mat_variants == 12:
-                f.write('FEAP * * elmt24: Embedded Grain\n')
+                f.write('FEAP * * elmt' + str(self.user_element_number) + ': Embedded Grain\n')
                 if self.mat_variants == 12:
                     f.write('  ' + str(len(self.mesh.nodes)) + ' ' + str(len(self.mesh.elems)) + ' ' + str(len(self.mesh.elsets)) + ' 3 15 8 0 0\n')
                 if self.mat_variants == 3:
@@ -71,7 +72,7 @@ class FEAPWriter:
                 f.write('a = ' + "{:e}".format(scale) + '\n')
             #2D, 2 martensite variants
             elif self.mat_variants == 2:
-                f.write('FEAP * * elmt25: Embedded Grain\n')
+                f.write('FEAP * * elmt' + str(self.user_element_number) + ': Embedded Grain\n')
                 f.write('  ' + str(len(self.mesh.nodes)) + ' ' + str(len(self.mesh.elems)) + ' ' + str(len(self.mesh.elsets)) + ' 2 4 4 0 0\n\n')
                 f.write('! --------------------------------------------\n')
                 f.write('!                    CONSTANTS                \n')

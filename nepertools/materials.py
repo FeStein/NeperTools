@@ -15,14 +15,14 @@ class Material_Creator():
         self.mat_variants = cf['general']['mat_variants']
         self.irrevers = cf['materials']['irrevers']
         self.interpol = cf['materials']['interpol']
-
+        self.user_element_number = cf['general']['user_element_number']
     def create_material_list(self,phi_list):
 
         material_list = []
         
         for num,(phi1,phi2,phi3) in enumerate(phi_list):
             current_material = Material(num+1,phi1,phi2,phi3,self.elasticitys,self.eigenstrains,self.irrevers,self.interpol)
-            current_material.create_content(self.mat_variants)
+            current_material.create_content(self.mat_variants,self.user_element_number)
             material_list.append(current_material)
 
         self.material_list = material_list
@@ -49,11 +49,11 @@ class Material:
         self.irrevers = irrevers
         self.interpol = interpol
         
-    def create_content(self,mat_var):
+    def create_content(self,mat_var,user_element_number):
         self.content.append('MATErial,' + str(self.id) + "\n")
         #Material cratiom for 2 martensite variants (useful for 2D)
         if mat_var == 2:
-            self.content.append('  User,25\n')
+            self.content.append('  User,' + str(user_element_number) + '\n')
             self.content.append('    ' + self.irrevers + '                                                    ! Switch irreversibility (1-on,else-off), Tolerance \n')
             self.content.append('    ' + str(self.interpol) + '                                                         ! Switch interpolation function, Currently No. 1 and 5 implemented, default is 5 \n')
             self.content.append('    dd   G     L     M                                        ! Chem. energy diff., G-Interface energy density, L-Controls width of transition zone, M-Mobility parameter\n')
@@ -78,7 +78,7 @@ class Material:
 
         #Material creation for 3 martensite variants 
         elif mat_var == 3:
-            self.content.append('  USER,24\n')
+            self.content.append('  USER,' + str(user_element_number) + '\n')
             #append orientations
             self.content.append('  ' + ' '.join([str((ori*np.pi)/180) for ori in self.orientations]) +'\n' )
             #Create elasticity tensor:
@@ -101,7 +101,7 @@ class Material:
 
         #Material creation for 12 martensite variants
         elif mat_var == 12:
-            self.content.append('  USER,24, ' + str(self.id) + ',1,2,3,4,5,6,7,8,9,10,11,12,13\n')
+            self.content.append('  USER,' + str(user_element_number) + ', ' + str(self.id) + ',1,2,3,4,5,6,7,8,9,10,11,12,13\n')
             self.content.append('  14,15\n')
             #append orientations
             self.content.append('  ' + ' '.join([str((ori*np.pi)/180) for ori in self.orientations]) +'\n' )
