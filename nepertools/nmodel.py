@@ -3,7 +3,7 @@
 #Mesh + TessFile needes as Input 
 #-------------------------------------------------------------------
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import random 
 #General Definitions
@@ -83,7 +83,7 @@ class Grain():
                     
     def _get_nodes(self):
         '''gets all nodes contained by the grain, using the node id set'''
-        for node in mesh.nodes:
+        for node in self.mesh.nodes:
             if node.id in self.node_id_set:
                 self.node_list.append(node)
         
@@ -143,7 +143,7 @@ class Grain():
     def visu(self):
         '''visualisation of the grain'''
         fig,ax = plt.subplots(figsize=(7,7))
-        for c,edge in enumerate(tf.edge_list):
+        for c,edge in enumerate(self.tf.edge_list):
             x = self._getcords(edge.v1)
             y = self._getcords(edge.v2)
             tg = list(zip(x,y))
@@ -278,7 +278,7 @@ class NucleusModel():
     def visualize_model(self):
         #Printing of Structure
         fig,ax = plt.subplots(figsize=(10,10))
-        for edge in tf.edge_list:
+        for edge in self.tf.edge_list:
             x = self._getcords(edge.v1)
             y = self._getcords(edge.v2)
             tg = list(zip(x,y))
@@ -289,8 +289,6 @@ class NucleusModel():
             x_values = [node.x for node in np.nodes]
             y_values = [node.y for node in np.nodes]
             plt.plot(x_values,y_values,'.',c = 'g' if np.mvariant == 1 else 'b',ms = 2)
-            
-        axis('off')
         plt.ylim(-0.01,1.01)
         plt.xlim(-0.01,1.01)
         plt.subplots_adjust(top = 1, bottom = 0, right = 1, left = 0, 
@@ -339,7 +337,7 @@ class Grain3D():
                     
     def _get_nodes(self):
         '''gets all nodes contained by the grain, using the node id set'''
-        for node in mesh.nodes:
+        for node in self.mesh.nodes:
             if node.id in self.node_id_set:
                 self.node_list.append(node)
                 
