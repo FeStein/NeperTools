@@ -176,7 +176,7 @@ class NucleusModel2D():
         with open(config_filename) as config_file:
             cf = json.load(config_file) 
         self.cf = cf
-        self.mat_variants = 2
+        self.mat_variants = self.cf['general']['mat_variants']
         self.mesh = mesh
         self.tf = tf
         
@@ -431,20 +431,23 @@ class Grain3D():
         #rem duplicates in boundary node list
         self.boundary_node_list = list(set(self.boundary_node_list))
         
-        print('start')
         rad = 0.02 #tbd should be dependend on mesh
         for node in self.boundary_node_list:
             for edge in self.edge_list:
                 p1,p2 = getcords(edge.v1),getcords(edge.v2)
                 if points_in_cylinder(p1,p2,rad,[node.x,node.y,node.z]):
                     self.triple_node_list.append(node)
-        print('end')
         #rem duplicates in triple node list
         self.triple_node_list = list(set(self.triple_node_list))
 
 class NucleusModel3D():
     
-    def __init__(self,mesh,tf):
+    def __init__(self,config_filename,mesh,tf):
+        with open(config_filename) as config_file:
+            cf = json.load(config_file) 
+        self.cf = cf
+        self.mat_variants = cf['general']['mat_variants']
+
         self.mesh = mesh
         self.tf = tf
         
@@ -488,8 +491,13 @@ class NucleusModel3D():
             if vert.id == id:
                 return [vert.x,vert.y,vert.z]
         
-    def create_model(self,radius,quantity,martvariants,grain_prob,bound_prob,triple_prob):
-        self.mat_variants = martvariants
+    def create_model(self):
+        radius = self.cf['nmodel']['radius']
+        quantity = self.cf['nmodel']['quantity']
+        grain_prob = self.cf['nmodel']['grain_prob']
+        bound_prob = self.cf['nmodel']['bound_prob']
+        triple_prob = self.cf['nmodel']['triple_prob']
+        martvariants = self.cf['general']['mat_variants']
         self.np_list = []
         total_nodes = sum([len(grain.node_list) for grain in self.grain_list])
         total_triple = sum([len(grain.triple_node_list) for grain in self.grain_list])
@@ -552,3 +560,40 @@ class NucleusModel3D():
             non_dup_nodes = [node for node in NP.nodes if node not in node_test_set]
             NP.nodes = non_dup_nodes
             node_test_set.update(non_dup_nodes)
+
+    def visualize_model(self):
+        fig = plt.figure(figsize=(7,7))
+        ax = plt.axes(projection="3d")
+
+        #Printing of Structure
+        def tgetcords(id):
+            for vert in self.tf.vertex_list:
+                if vert.id == id:
+                    return [vert.x,vert.y,vert.z]
+
+        for edge in self.tf.edge_list:
+            x = tgetcords(edge.v1)
+            y = tgetcords(edge.v2)
+            tg = list(zip(x,y))
+            plt.plot(tg[0],tg[1],tg[2], 'k')
+        
+        #plot NukleusPoints
+        colors = ['tab:blue','tab:orange','tab:green','tab:red','tab:purple','tab:brown','tab:pink','tab:grey','tab:olive','tab:cyan','b','g']
+        for mtv in range(self.mat_variants):
+            x_values = []
+            y_values = []
+            z_values = []
+            NP_fix = [np for np in self.np_list if np.mvariant == mtv + 1]
+            for NP in NP_fix:
+                
+                x_values.extend([node.x for node in NP.nodes])
+                y_values.extend([node.y for node in NP.nodes])
+                z_values.extend([node.z for node in NP.nodes])
+
+                ax.plot(x_values,y_values,z_values,'.',c=colors[mtv ],alpha = 0.5)
+
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.set_zlabel('z')
+
+        plt.show()
