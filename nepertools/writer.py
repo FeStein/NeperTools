@@ -229,12 +229,15 @@ class NucleusWriter():
     Appends initial conditions as well as solve script to before generated FEAP
     input script. Note that the prior input skript needs to be created before 
     '''
-    def __init__(self,filename,nucleus_model):
+    def __init__(self,filename,config_filename,nucleus_model):
+        with open(config_filename) as config_file:
+            cf = json.load(config_file) 
+        self.cf = cf
         self.filename = filename
         self.nucleus_model = nucleus_model
-        
+        self.mat_variants = self.cf['general']['mat_variants']
     def write_np(self):
-        if self.nucleus_model.mat_variants == 3: #2D Variants
+        if self.mat_variants == 2: #2D Variants
             with open(self.filename,'a') as f:
                 #Initial Conditions
                 f.write("! -------------------------------------------- \n")
@@ -294,7 +297,7 @@ class NucleusWriter():
                 f.write('    NEXT,print\n')
                 f.write('END batch\n')
     
-        if self.nucleus_model.mat_variants == 3:
+        elif self.mat_variants == 3:
             with open(self.filename,'a') as f:
                 f.write("!-----------------------------------------\n")
                 f.write("!        Initial Conditions               \n")
@@ -323,7 +326,7 @@ class NucleusWriter():
                 f.write('\n')
                 f.write('stop\n')
             #12 martensite variants
-        elif self.nucleus_model.mat_variants == 12:
+        elif self.mat_variants == 12:
             with open(self.filename,'a') as f:
                 f.write("!-----------------------------------------\n")
                 f.write("!        Initial Conditions               \n")
