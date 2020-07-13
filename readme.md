@@ -11,8 +11,24 @@ including initial conditions using a custom nucleation model.
 Create a conda environment (python 3.*) including the dependencies listed below. Then cd in this directory and do
 ```bash
 pip install .
-```
-Maybe you want to clean the repo before installing it as module (examples.ipynb, example folder).
+```  
+Maybe you want to clean the repo before installing it as module (examples.ipynb, example folder).  
+A much more useful way to import the module to make ongoing changes is by importing it from a folder without installing it to an anaconda environment. 
+The following code is used to set the path variable pointing to a clone of this repo.
+```python
+%load_ext autoreload
+%autoreload 2
+import sys
+sys.path.append('C:\\Users\\sft7rng\\Desktop\\NeperTools')
+``` 
+Note that the first to lines are only necessary if you want to reload the module automatically after every change. Afterwards the module can be imported as usual:
+```python
+import nepertools.inp
+import nepertools.tess
+import nepertools.materials
+import nepertools.nmodel
+import nepertools.writer
+``` 
 ## Example
 Examples for 2(2D), 3,12(3D) martensite variants are given in the examples folder. This includes the .tess, .inp as well as the Output (FEAP input script). The codes necessary together with some visualizations is given in the example.ipynb Jupyter notebook.
 
