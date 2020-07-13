@@ -196,11 +196,16 @@ class NucleusModel2D():
                 grain.node_id_set = grain.node_id_set - rem_set
                 
     def create_model(self):
-        radius = self.cf['nmodel']['radius']
+        radius = self.cf['nmodel']['radius'] 
         quantity = self.cf['nmodel']['quantity']
         grain_prob = self.cf['nmodel']['grain_prob']
         bound_prob = self.cf['nmodel']['bound_prob']
         triple_prob = self.cf['nmodel']['triple_prob']
+        if grain_prob + bound_prob + triple_prob != 1:
+            sum_prob = grain_prob + bound_prob + triple_prob
+            grain_prob = grain_prob / sum_prob
+            bound_prob = bound_prob / sum_prob
+            triple_prob = triple_prob / sum_prob
         total_nodes = sum([len(grain.node_list) for grain in self.grain_list])
         total_triple = sum([len(grain.triple_node_list) for grain in self.grain_list])
         if triple_prob == True:
@@ -219,17 +224,25 @@ class NucleusModel2D():
             all_triple = False
             #Split to different areas
             quantity_grain = int(grain_prob*quantity)
-            quantity_bound = int(bound_prob*quantity)
-            quantity_triple = int(triple_prob*quantity)
+            overlab = grain_prob*quantity - int(grain_prob*quantity)
+
+            quantity_triple = int(triple_prob*quantity + overlab)
+            overlab  = triple_prob*quantity + overlab - quantity_triple
+
+            quantity_bound = quantity - quantity_grain - quantity_triple
             #Check if sum is still fine
             if quantity_triple > total_triple:
                 quantity_bound += quantity_triple - total_triple
         
         #Here the NP's are created:
+        overlab_g = 0
+        overlab_b = 0
+        overlab_t = 0
         for grain in self.grain_list:
             mv = 1
             #Grain Nodes:
-            num_points = int((len(grain.node_list)/total_nodes)*quantity_grain)
+            num_points = int((len(grain.node_list)/total_nodes)*quantity_grain + overlab_g)
+            overlab_g = (len(grain.node_list)/total_nodes)*quantity_grain + overlab_g - num_points
             point_index = np.random.randint(len(grain.node_list), size=num_points)
             point_index = sorted(list(point_index))
             for i in point_index:
@@ -242,7 +255,8 @@ class NucleusModel2D():
                 NP.fetch_nodes(grain.node_list,radius)
                 self.np_list.append(NP)
             #Boundary Nodes:
-            num_points = int((len(grain.node_list)/total_nodes)*quantity_bound) + 1
+            num_points = int((len(grain.node_list)/total_nodes)*quantity_bound + overlab_b)
+            overlab_b = (len(grain.node_list)/total_nodes)*quantity_bound + overlab_b - num_points
             point_index = np.random.randint(len(grain.boundary_node_list), size=num_points)
             point_index = sorted(list(point_index))
             for i in point_index:
@@ -267,7 +281,8 @@ class NucleusModel2D():
                     NP.fetch_nodes(grain.node_list,radius)
                     self.np_list.append(NP)
             else:
-                num_points = int((len(grain.triple_node_list)/total_nodes)*quantity_grain)
+                num_points = int((len(grain.node_list)/total_nodes)*quantity_triple + overlab_t)
+                overlab_t = (len(grain.node_list)/total_nodes)*quantity_triple + overlab_t - num_points
                 point_index = np.random.randint(len(grain.triple_node_list), size=num_points)
                 point_index = sorted(list(point_index))
                 for i in point_index:
