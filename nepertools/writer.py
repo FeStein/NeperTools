@@ -112,6 +112,7 @@ class FEAPWriter:
 
     def write_mesh(self,sc = 1):
         dim = self.cf['general']['dimensions']
+        sc = self.cf['general']['scale']
         with open(self.filename, 'a') as f:
             #insert header here
             #Print Coordinates to file
@@ -143,11 +144,11 @@ class FEAPWriter:
                 f.write("!        Boundary Conditions              \n")
                 f.write("!-----------------------------------------\n")
                 f.write("\n") 
-                f.write('cboun\n')
-                f.write('node 0.0,0.0 1 1\n')
-                f.write('\n')
-                f.write('cboun\n')
-                f.write(' node a 0.0 0 1\n')
+                f.write('EBOUndary\n')
+                f.write('  1 a   1 1 1 1\n')
+                f.write('  1 0   1 1 1 1\n')
+                f.write('  2 a   1 1 1 1\n')
+                f.write('  2 0   1 1 1 1\n')
                 f.write('\n')
                 f.write('end\n')
                 f.write('\n')
