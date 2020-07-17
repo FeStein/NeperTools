@@ -86,4 +86,7 @@ Defines the parameter for the nucleation model to create the initial conditions.
 
 note that grain_prob, bound_prob and triple_prob should sum up to 1
 ## To Do
+* check if number of nucleus points is consistent towards the number defined in the config.json file
+* update examples (config files, in examples are not up to date, missing for locking boundaries)
+* update 3D Model -> should be possible to lock boundaries like in 2D
 * Visualization only works for structures which have coordinates between 0 and 1 -> should be adaptive
