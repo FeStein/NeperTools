@@ -83,10 +83,11 @@ Defines the parameter for the nucleation model to create the initial conditions.
 * grain_prob - between 0 and 1, probability of a nuclei spawning in a grain
 * bound_prob - between 0 and 1, probability of a nuclei spawning on a boundary
 * triple_prob - between 0 and 1, probabilty of a nuclei spawnign on a triple (node in 2D vertex in 3D)  
+* lock_bound - locks boundaries of each grain in FEAP using BOUNdary
 
 note that grain_prob, bound_prob and triple_prob should sum up to 1
 ## To Do
 * check if number of nucleus points is consistent towards the number defined in the config.json file
-* update examples (config files, in examples are not up to date, missing for locking boundaries)
+* update examples, added lock_bound to configfiles but the output (FEAP-Input Skript) needs to be edited as well
 * update 3D Model -> should be possible to lock boundaries like in 2D
 * Visualization only works for structures which have coordinates between 0 and 1 -> should be adaptive
