@@ -125,7 +125,7 @@ class Grain():
         self.node_grid_y = node_grid
 
     def _get_boundary_nodes(self):
-        '''get boundary contains at the grain (node with less than 4 neighbours)'''
+        '''get boundary nodes at the grain (node with less than 4 neighbours)'''
         for x_index in range(len(self.node_grid_x)):
             for y_index in range(len(self.node_grid_x[x_index])):
                 if x_index - 1 < 0 or y_index - 1 < 0:
@@ -180,20 +180,34 @@ class NucleusModel2D():
         self.mesh = mesh
         self.tf = tf
         
-        self.np_list = []
+        self.np_list = []    
+        self.removed_nodes = []  #contains all nodes which are removed e.g. nodes wich are used to lock boundaries 
+        
         self.grain_list = [Grain(es.setMat,es.elems,mesh,tf) for es in self.mesh.elsets]
         self._rem_duplicates_list()
+
         for grain in self.grain_list: grain.fetch_nodes()
 
     def _rem_duplicates_list(self):
         '''checks all node ids per grain in  the grain list, then removes both instances of duplicates of ids
         contained in more than one grain. This makes sure that nodes, which are contained in elements of different
-        grains are filterd out. Needs to be done before all nodes are fetched (fetching is based on node id list).'''
+        grains are filterd out. Needs to be done before all nodes are fetched (fetching is based on node id list).
+        -------------------------------------------------
+        All removed nodes are collected in removed_nodes_id_set and then used to fetch the removed nodes. this is 
+        useful to later lock the boundaries of grains
+        '''
+        removed_nodes_id_set = set()
         remove_sets = [grain.node_id_set for grain in self.grain_list]
         for i,grain in enumerate(self.grain_list):
             for j,rem_set in enumerate(remove_sets):
                 if i == j: continue
+                removed_nodes_id_set = removed_nodes_id_set | set.intersection(grain.node_id_set, rem_set)
                 grain.node_id_set = grain.node_id_set - rem_set
+        #collect removed nodes 
+        if self.cf['nmodel']['lock_bound']:
+            for node in self.mesh.nodes:
+                if node.id in removed_nodes_id_set:
+                    self.removed_nodes.append(node)
                 
     def create_model(self):
         radius = self.cf['nmodel']['radius'] 

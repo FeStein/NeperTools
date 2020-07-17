@@ -150,8 +150,6 @@ class FEAPWriter:
                 f.write('  2 a   1 1 1 1\n')
                 f.write('  2 0   1 1 1 1\n')
                 f.write('\n')
-                f.write('end\n')
-                f.write('\n')
 
             #3D 3 mart-variants:    
             elif self.mat_variants == 3:
@@ -181,8 +179,6 @@ class FEAPWriter:
                 f.write('!  3 a   1 1 1 1 1 1 1\n')
                 f.write('!  3 0   1 1 1 1 1 1 1\n')
                 
-                f.write("\n")
-                f.write("end\n")
                 f.write("\n")
 
             #3D 12 mart-variants:
@@ -217,8 +213,6 @@ class FEAPWriter:
                 f.write('        1 \n')
 
                 f.write('\n')
-                f.write("end\n")
-                f.write("\n")
 
             else:
                 raise ValueError('Unkown number of martensite variants')
@@ -237,10 +231,19 @@ class NucleusWriter():
         self.filename = filename
         self.nucleus_model = nucleus_model
         self.mat_variants = self.cf['general']['mat_variants']
+
     def write_np(self):
         if self.mat_variants == 2: #2D Variants
             with open(self.filename,'a') as f:
+                if self.cf['nmodel']['lock_bound']:
+                    f.write("BOUNdary\n")
+                    f.write('\n')
+                    for node in self.nucleus_model.removed_nodes:
+                        f.write('  ' + str(node.id) + ' 0.0 0 0 1 1\n')
+                    f.write('\n')
                 #Initial Conditions
+                f.write('end\n')
+                f.write('\n')
                 f.write("! -------------------------------------------- \n")
                 f.write("!              INITIAL CONDITIONS              \n")
                 f.write("! -------------------------------------------- \n")
@@ -300,6 +303,8 @@ class NucleusWriter():
     
         elif self.mat_variants == 3:
             with open(self.filename,'a') as f:
+                f.write('end\n')
+                f.write('\n')
                 f.write("!-----------------------------------------\n")
                 f.write("!        Initial Conditions               \n")
                 f.write("!-----------------------------------------\n")
@@ -329,6 +334,8 @@ class NucleusWriter():
             #12 martensite variants
         elif self.mat_variants == 12:
             with open(self.filename,'a') as f:
+                f.write('end\n')
+                f.write('\n')
                 f.write("!-----------------------------------------\n")
                 f.write("!        Initial Conditions               \n")
                 f.write("!-----------------------------------------\n")
