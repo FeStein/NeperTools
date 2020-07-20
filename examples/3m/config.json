@@ -56,7 +56,7 @@
         "quantity":200,
         "grain_prob":0,
         "bound_prob":0.5,
-        "triple_prob":0.5
+        "triple_prob":0.5,
         "lock_bound":true
     }
 }
