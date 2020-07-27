@@ -590,7 +590,7 @@ class NucleusModel3D():
             NP.nodes = non_dup_nodes
             node_test_set.update(non_dup_nodes)
 
-    def visualize_model(self):
+    def visualize_model(self,path = None):
         fig = plt.figure(figsize=(7,7))
         ax = plt.axes(projection="3d")
 
@@ -624,5 +624,6 @@ class NucleusModel3D():
         ax.set_xlabel('x')
         ax.set_ylabel('y')
         ax.set_zlabel('z')
-
+        if path != None:
+            plt.savefig(path)
         plt.show()
