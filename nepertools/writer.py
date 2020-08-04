@@ -303,6 +303,12 @@ class NucleusWriter():
     
         elif self.mat_variants == 3:
             with open(self.filename,'a') as f:
+                if self.cf['nmodel']['lock_bound']:
+                    f.write("BOUNdary\n")
+                    f.write('\n')
+                    for node in self.nucleus_model.dup_node_list:
+                        f.write('  ' + str(node.id) + ' 0.0 0 0 1 1 1\n')
+                    f.write('\n')
                 f.write('end\n')
                 f.write('\n')
                 f.write("!-----------------------------------------\n")
@@ -334,6 +340,13 @@ class NucleusWriter():
             #12 martensite variants
         elif self.mat_variants == 12:
             with open(self.filename,'a') as f:
+                if self.cf['nmodel']['lock_bound']:
+                    f.write("BOUNdary\n")
+                    f.write('\n')
+                    for node in self.nucleus_model.dup_node_list:
+                        f.write('  ' + str(node.id) + ' 0.0 0 0 1 1 1 1 1 1 1 1 1 1 1\n')
+                        f.write('     1\n')
+                    f.write('\n')
                 f.write('end\n')
                 f.write('\n')
                 f.write("!-----------------------------------------\n")
