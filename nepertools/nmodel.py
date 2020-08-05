@@ -314,7 +314,7 @@ class NucleusModel2D():
             if vert.id == id:
                 return [vert.x,vert.y]
             
-    def visualize_model(self):
+    def visualize_model(self,path = None):
         #Printing of Structure
         fig,ax = plt.subplots(figsize=(10,10))
         for edge in self.tf.edge_list:
@@ -336,6 +336,7 @@ class NucleusModel2D():
         plt.gca().xaxis.set_major_locator(plt.NullLocator())
         plt.gca().yaxis.set_major_locator(plt.NullLocator())
 
+        if path != None: plt.savefig(path)
         
         plt.show()
 

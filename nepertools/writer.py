@@ -158,12 +158,12 @@ class FEAPWriter:
                 f.write("!        Boundary Conditions              \n")
                 f.write("!-----------------------------------------\n")
                 f.write("\n") 
-                f.write("BOUNdary\n")
-                f.write("1     1  0  0  0 -1  0  0  0\n")
-                f.write(str(len(self.mesh.nodes)) + " 0  0  0  0  1  0  0  0\n")
-                f.write(str(self.mesh.get_node_id(0.0,0.0,0.0)) + '   0  1  1  1  1  0  0  0\n')            
-                f.write(str(self.mesh.get_node_id(max([node.x for node in self.mesh.nodes]),0.0,0.0)) + '   0  0  1  1  1  0  0  0\n')
-                f.write(str(self.mesh.get_node_id(0.0,max([node.y for node in self.mesh.nodes]),0.0)) + '   0  0  0  1  1  0  0  0\n')
+                f.write("!BOUNdary\n")
+                f.write("!1     1  0  0  0 -1  0  0  0\n")
+                f.write('!' + str(len(self.mesh.nodes)) + " 0  0  0  0  1  0  0  0\n")
+                f.write('!' + str(self.mesh.get_node_id(0.0,0.0,0.0)) + '   0  1  1  1  1  0  0  0\n')            
+                f.write('!' + str(self.mesh.get_node_id(max([node.x for node in self.mesh.nodes]),0.0,0.0)) + '   0  0  1  1  1  0  0  0\n')
+                f.write('!' + str(self.mesh.get_node_id(0.0,max([node.y for node in self.mesh.nodes]),0.0)) + '   0  0  0  1  1  0  0  0\n')
                 f.write('\n')
 
                 f.write("DISPlacement\n")
@@ -171,13 +171,13 @@ class FEAPWriter:
                 f.write("  " + str(self.mesh.nodes[-1].id) + " 0 0 0 0 Ts 0 0 0 \n")
                 f.write("\n")
 
-                f.write('!EBOUndary\n')
-                f.write('!  1 a   1 1 1 1 1 1 1\n')
-                f.write('!  1 0   1 1 1 1 1 1 1\n')
-                f.write('!  2 a   1 1 1 1 1 1 1\n')
-                f.write('!  2 0   1 1 1 1 1 1 1\n')
-                f.write('!  3 a   1 1 1 1 1 1 1\n')
-                f.write('!  3 0   1 1 1 1 1 1 1\n')
+                f.write('EBOUndary\n')
+                f.write('  1 a   1 1 1 1 1 1 1\n')
+                f.write('  1 0   1 1 1 1 1 1 1\n')
+                f.write('  2 a   1 1 1 1 1 1 1\n')
+                f.write('  2 0   1 1 1 1 1 1 1\n')
+                f.write('  3 a   1 1 1 1 1 1 1\n')
+                f.write('  3 0   1 1 1 1 1 1 1\n')
                 
                 f.write("\n")
 
@@ -188,15 +188,6 @@ class FEAPWriter:
                 f.write("!        Boundary Conditions              \n")
                 f.write("!-----------------------------------------\n")
                 f.write("\n") 
-
-                f.write('!BOUNdary\n')
-                f.write('!  1 0            1 1 1   0 0 0 0 0 0 0 0 0\n')
-                f.write('!  0 0 0 \n')
-                f.write('!  ' + str(self.mesh.get_node_id(0.0,0.0,0.0)) +' 0      0 1 1   0 0 0 0 0 0 0 0 0\n')
-                f.write('!  0 0 0 \n')
-                f.write('!  ' + str(self.mesh.get_node_id(max([node.x for node in self.mesh.nodes]),0.0,0.0)) + '0  0 0 1   0 0 0 0 0 0 0 0 0\n')
-                f.write('!  0 0 0 \n')
-                f.write('  \n')
 
                 f.write('EBOUndary     \n')
                 f.write('  1 a   1 1 1  1 1 1 1 1 1 1 1 1 1 1\n')
@@ -213,6 +204,15 @@ class FEAPWriter:
                 f.write('        1 \n')
 
                 f.write('\n')
+
+                f.write('!BOUNdary\n')
+                f.write('!  1 0            1 1 1   0 0 0 0 0 0 0 0 0\n')
+                f.write('!  0 0 0 \n')
+                f.write('!  ' + str(self.mesh.get_node_id(0.0,0.0,0.0)) +' 0      0 1 1   0 0 0 0 0 0 0 0 0\n')
+                f.write('!  0 0 0 \n')
+                f.write('!  ' + str(self.mesh.get_node_id(max([node.x for node in self.mesh.nodes]),0.0,0.0)) + '0  0 0 1   0 0 0 0 0 0 0 0 0\n')
+                f.write('!  0 0 0 \n')
+                f.write('!  \n')     #Will be continued from Nucleus Writer for optional lock of boundaries
 
             else:
                 raise ValueError('Unkown number of martensite variants')
@@ -304,8 +304,6 @@ class NucleusWriter():
         elif self.mat_variants == 3:
             with open(self.filename,'a') as f:
                 if self.cf['nmodel']['lock_bound']:
-                    f.write("BOUNdary\n")
-                    f.write('\n')
                     for node in self.nucleus_model.dup_node_list:
                         f.write('  ' + str(node.id) + ' 0.0 0 0 1 1 1\n')
                     f.write('\n')
@@ -344,8 +342,8 @@ class NucleusWriter():
                     f.write("BOUNdary\n")
                     f.write('\n')
                     for node in self.nucleus_model.dup_node_list:
-                        f.write('  ' + str(node.id) + ' 0.0 0 0 1 1 1 1 1 1 1 1 1 1 1\n')
-                        f.write('     1\n')
+                        f.write('!  ' + str(node.id) + ' 0            0 0 0   1 1 1 1 1 1 1 1 1\n')
+                        f.write('!  1 1 1 \n')
                     f.write('\n')
                 f.write('end\n')
                 f.write('\n')
