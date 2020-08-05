@@ -91,3 +91,4 @@ note that grain_prob, bound_prob and triple_prob should sum up to 1
 * update examples, added lock_bound to configfiles but the output (FEAP-Input Skript) needs to be edited as well
 * update 3D Model -> should be possible to lock boundaries like in 2D
 * Visualization only works for structures which have coordinates between 0 and 1 -> should be adaptive
+* Add tqdm to loops which loop through all nodes to show progress while running
