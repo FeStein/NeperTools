@@ -97,7 +97,8 @@ class Material:
                 l = '  ' + ' '.join([str(i) for i in es]) + '  ! E_11 E_22 E_12 Eigenstrain tensor martensite' + str(num + 1) +' \n'
                 self.content.append(l)
 
-            self.content.extend(self.appendix)
+            self.content.append('\n')
+            #self.content.extend(self.appendix)
 
         #Material creation for 12 martensite variants
         elif mat_var == 12:
@@ -120,7 +121,8 @@ class Material:
             for num,es in enumerate(self.eigenstrains[:12]):
                 l = '  ' + ' '.join([str(i) for i in es]) + '  ! E_11 E_22 E_12 Eigenstrain tensor martensite' + str(num + 1) +' \n'
                 self.content.append(l)
-
-            self.content.extend(self.appendix)
+                
+            self.content.append('\n')
+            #self.content.extend(self.appendix) Changed behaviour
         else:
             raise ValueError('Unknown number of martesnite variants')

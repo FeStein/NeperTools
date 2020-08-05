@@ -21,7 +21,7 @@ The following code is used to set the path variable pointing to a clone of this 
 import sys
 sys.path.append('C:\\Users\\sft7rng\\Desktop\\NeperTools')
 ``` 
-Note that the first to lines are only necessary if you want to reload the module automatically after every change. Afterwards the module can be imported as usual:
+Note that the first to lines are only necessary if you want to reload the module automatically after every change. This may cause time lags, depending on the number of safes are done. Afterwards the module can be imported as usual:
 ```python
 import nepertools.inp
 import nepertools.tess
