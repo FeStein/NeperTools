@@ -50,7 +50,7 @@ class FEAPWriter:
                 f.write('!elements   :          ' + str(len(self.mesh.elems)) + '\n')
                 f.write('!martensite variants:  ' + str(self.cf['general']['mat_variants']) + '\n')
                 f.write('!number of nuclei:     ' + str(self.cf['nmodel']['quantity']) + '\n')
-                f.write('!radius of nuclei:     ' + str(self.cf['radius']['scale']*self.cf['nmodel']['radius']) + '\n')
+                f.write('!radius of nuclei:     ' + str(self.cf['general']['scale']*self.cf['nmodel']['radius']) + '\n')
                 f.write('\n')
                 
                 f.write('! --------------------------------------------\n')
