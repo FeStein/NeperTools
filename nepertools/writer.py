@@ -44,32 +44,38 @@ class FEAPWriter:
                     f.write('  ' + str(len(self.mesh.nodes)) + ' ' + str(len(self.mesh.elems)) + ' ' + str(len(self.mesh.elsets)) + ' 3 15 8 0 0\n')
                 if self.mat_variants == 3:
                     f.write('  ' + str(len(self.mesh.nodes)) + ' ' + str(len(self.mesh.elems)) + ' ' + str(len(self.mesh.elsets)) + ' 3 7 8 0 0\n')
+                f.write('\n')
+                f.write('!-------------------Sturcture Informations--------------------------')
+                f.write('!edge length:          ' + str(self.cf['general']['scale']) + '\n')
+                f.write('!elements   :          ' + str(len(self.mesh.elems)) + '\n')
+                f.write('!martensite variants:  ' + str(self.cf['general']['mat_variants']) + '\n')
+                f.write('!number of nuclei:     ' + str(self.cf['nmodel']['quantity']) + '\n')
+                f.write('!radius of nuclei:     ' + str(self.cf['radius']['scale']*self.cf['nmodel']['radius']) + '\n')
+                f.write('\n')
+                
                 f.write('! --------------------------------------------\n')
                 f.write('!                    CONSTANTS                \n')
                 f.write('! --------------------------------------------\n')
                 f.write('\nCONStants\n')
                 f.write('L =  ' + "{:e}".format(L) + '  ! M-Mobility parameter \n')
                 f.write('M =  ' + "{:e}".format(M) + '  ! pre-factor: kappa_sep \n')
-                f.write('ks = ' + "{:e}".format(ks) + '  ! pre-factor: kappa_sep \n')
-                f.write('kg = ' + "{:e}".format(kg) + '  ! pre-factor: kappa_grad \n')
-                f.write('al = ' + "{:e}".format(al) + '  ! alpha-Constant thermal expansion coefficient \n')
-                f.write('Ti = ' + "{:e}".format(Ti) + '  ! initial Temperature \n')
-                f.write('la = ' + "{:e}".format(la) + '  ! heat conductivity \n')
-                f.write('c =  ' + "{:e}".format(c) + '  ! heat capacity \n')
-                f.write('ro = ' + "{:e}".format(ro) + '  ! density \n')
-                f.write('ga = ' + "{:e}".format(ga) + '  ! parameter for temperature dependend landau polynom: gamma \n')
-                f.write('th = ' + "{:e}".format(th) + '  ! parameter for temperature dependend landau polynom: theta^thilde \n')
-                f.write('T0 = ' + "{:e}".format(T0) + '  ! parameter for temperature dependend landau polynom: equlibirium temperature \n')
-                f.write('Ts = ' + "{:e}".format(Ts) + '  ! temperature of the microstructure \n')
                 f.write('op = ' + "{:e}".format(op) + '  ! order of the nucleation sites  \n')
                 f.write('dd = ' + "{:e}".format(dd) + '  ! driving force  \n')
-                f.write('aa = ' + "{:e}".format(aa) + '  ! energy barrier  \n')
                 if type(G) == str:
                     f.write('G =  ' + G + '  ! G-Interface energy density \n')
                 else:
                     f.write('G =  ' + "{:e}".format(G) + '  ! G-Interface energy density \n')
                 f.write('k = 1.0\n')
+                if len(self.cf['materials']['irrevers'].split[' '] > 2):
+                    splt = self.cf['materials']['irrevers'].split[' ']
+                    f.write('sr = ' + splt[0] + ' !Switch irreversibility\n')
+                    f.write('st = ' + splt[1] + ' ! Tolerance\n')
+                else:
+                    f.write('sr = 1     !Switch irreversibility\n')
+                    f.write('st = 1e-20 ! Tolerance')
+                f.write('si = ' + self.cf['materials']['interpol'] + ' Switch interpolation function, Currently No. 1 and 5 are implemented, default is 5')
                 f.write('a = ' + "{:e}".format(scale) + '\n')
+
             #2D, 2 martensite variants
             elif self.mat_variants == 2:
                 f.write('FEAP * * elmt' + str(self.user_element_number) + ': Embedded Grain\n')
