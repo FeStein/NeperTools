@@ -72,7 +72,7 @@ class FEAPWriter:
                     f.write('st = ' + splt[1] + ' ! Tolerance\n')
                 else:
                     f.write('sr = 1     !Switch irreversibility\n')
-                    f.write('st = 1e-20 ! Tolerance')
+                    f.write('st = 1e-8 ! Tolerance')
                 f.write('si = ' + self.cf['materials']['interpol'] + ' Switch interpolation function, Currently No. 1 and 5 are implemented, default is 5')
                 f.write('a = ' + "{:e}".format(scale) + '\n')
 
@@ -243,7 +243,6 @@ class NucleusWriter():
             with open(self.filename,'a') as f:
                 if self.cf['nmodel']['lock_bound']:
                     f.write("BOUNdary\n")
-                    f.write('\n')
                     for node in self.nucleus_model.removed_nodes:
                         f.write('  ' + str(node.id) + ' 0.0 0 0 1 1\n')
                     f.write('\n')
@@ -323,8 +322,8 @@ class NucleusWriter():
                 f.write("  OPTI\n")
                 f.write("  INITial,disp\n")
                 f.write("end\n")
-                #f.write('1 1 0 0 Ts 0 0 \n')
-                #f.write('132651 0 0 0 Ts 0 0\n')
+                f.write('1 1 0 0 Ts 0 0 \n')
+                f.write(str(self.nucleus_model.mesh.nodes[-1].id) + ' 0 0 0 Ts 0 0\n')
                 written_node_set = set()
                 for np in self.nucleus_model.np_list:
                     for node in np.nodes:
@@ -345,11 +344,10 @@ class NucleusWriter():
         elif self.mat_variants == 12:
             with open(self.filename,'a') as f:
                 if self.cf['nmodel']['lock_bound']:
-                    f.write("BOUNdary\n")
-                    f.write('\n')
+                    f.write("!BOUNdary\n")
                     for node in self.nucleus_model.dup_node_list:
-                        f.write('  ' + str(node.id) + ' 0            0 0 0   1 1 1 1 1 1 1 1 1\n')
-                        f.write('  1 1 1 \n')
+                        f.write('!  ' + str(node.id) + ' 0            0 0 0   1 1 1 1 1 1 1 1 1\n')
+                        f.write('!  1 1 1 \n')
                     f.write('\n')
                 f.write('end\n')
                 f.write('\n')
@@ -361,6 +359,10 @@ class NucleusWriter():
                 f.write("  OPTI\n")
                 f.write("  INITial,disp\n")
                 f.write("end\n")
+                f.write('  ' + str(self.nucleus_model.mesh.nodes[0].id) + '     1  1e-20 0.0 0.0   0 0 0 0 0 0 0 0 0 0 0\n')
+                f.write('     0\n')
+                f.write('  ' + str(self.nucleus_model.mesh.nodes[-1].id) + '     0  1e-20 0.0 0.0   0 0 0 0 0 0 0 0 0 0 0\n')
+                f.write('     0\n')
                 written_node_set = set()
                 for np in self.nucleus_model.np_list:
                     for node in np.nodes:
