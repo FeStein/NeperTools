@@ -66,14 +66,14 @@ class FEAPWriter:
                 else:
                     f.write('G =  ' + "{:e}".format(G) + '  ! G-Interface energy density \n')
                 f.write('k = 1.0\n')
-                if len(self.cf['materials']['irrevers'].split[' '] > 2):
-                    splt = self.cf['materials']['irrevers'].split[' ']
+                if len(self.cf['materials']['irrevers'].split(' ')) > 1:
+                    splt = self.cf['materials']['irrevers'].split(' ')
                     f.write('sr = ' + splt[0] + ' !Switch irreversibility\n')
                     f.write('st = ' + splt[1] + ' ! Tolerance\n')
                 else:
                     f.write('sr = 1     !Switch irreversibility\n')
                     f.write('st = 1e-8 ! Tolerance')
-                f.write('si = ' + self.cf['materials']['interpol'] + ' Switch interpolation function, Currently No. 1 and 5 are implemented, default is 5')
+                f.write('si = ' + str(self.cf['materials']['interpol']) + ' Switch interpolation function, Currently No. 1 and 5 are implemented, default is 5')
                 f.write('a = ' + "{:e}".format(scale) + '\n')
 
             #2D, 2 martensite variants
