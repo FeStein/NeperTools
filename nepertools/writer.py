@@ -2,6 +2,7 @@
 #Creation of FEAP Inputskript wihtout the intial conditions
 #-------------------------------------------------------------------
 import json
+import numpy as np
 
 class FEAPWriter:
     """
@@ -47,7 +48,7 @@ class FEAPWriter:
                 f.write('\n')
                 f.write('!-------------------Sturcture Informations--------------------------')
                 f.write('!edge length:          ' + str(self.cf['general']['scale']) + '\n')
-                f.write('!elements   :          ' + str(len(self.mesh.elems)) + '\n')
+                f.write('!elements   :          ' + str(np.cbrt(len(self.mesh.elems))) + '\n')
                 f.write('!martensite variants:  ' + str(self.cf['general']['mat_variants']) + '\n')
                 f.write('!number of nuclei:     ' + str(self.cf['nmodel']['quantity']) + '\n')
                 f.write('!radius of nuclei:     ' + str(self.cf['general']['scale']*self.cf['nmodel']['radius']) + '\n')
@@ -72,8 +73,8 @@ class FEAPWriter:
                     f.write('st = ' + splt[1] + ' ! Tolerance\n')
                 else:
                     f.write('sr = 1     !Switch irreversibility\n')
-                    f.write('st = 1e-8 ! Tolerance')
-                f.write('si = ' + str(self.cf['materials']['interpol']) + ' Switch interpolation function, Currently No. 1 and 5 are implemented, default is 5')
+                    f.write('st = 1e-8 ! Tolerance\n')
+                f.write('si = ' + str(self.cf['materials']['interpol']) + ' !Switch interpolation function, Currently No. 1 and 5 are implemented, default is 5\n')
                 f.write('a = ' + "{:e}".format(scale) + '\n')
 
             #2D, 2 martensite variants
