@@ -5,6 +5,7 @@
 import re
 import matplotlib.pyplot as plt
 from random import randint
+from tqdm import tqdm
 class Node:
     """
     Node class, defining the strucutre of a Node for 2D as well as 3D
@@ -173,7 +174,7 @@ class InpFileParser:
 
         
         with open(self.filename, 'r') as f:
-            for lineNumber, line in enumerate(f.readlines()):
+            for lineNumber, line in tqdm(enumerate(f.readlines())):
                 #Checking for keywords -> choose parsing mode
                 if line.strip().startswith("*"):
                     if  (line.strip().split(',')[0]) == "*Node":

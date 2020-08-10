@@ -5,6 +5,7 @@
 import re
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from tqdm import tqdm
 
 class TessFile:
     """
@@ -205,7 +206,7 @@ class TESS_Parser:
         tess_file = TessFile()
         readmode = TESS_Parser.UNKNOWN
         with open(self.filename, 'r') as f:
-            for _, line in enumerate(f.readlines()):
+            for _, line in tqdm(enumerate(f.readlines())):
                 #Checking for keywords -> choose parsing modes
                 if line.strip().startswith("*"):
                     if (line.strip().split(',')[0]) == "**cell":
