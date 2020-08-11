@@ -57,7 +57,7 @@ class Material:
             self.content.append('    ' + self.irrevers + '                                                    ! Switch irreversibility (1-on,else-off), Tolerance \n')
             self.content.append('    ' + str(self.interpol) + '                                                         ! Switch interpolation function, Currently No. 1 and 5 implemented, default is 5 \n')
             self.content.append('    dd   G     L     M                                        ! Chem. energy diff., G-Interface energy density, L-Controls width of transition zone, M-Mobility parameter\n')
-            self.content.append('    ' + ' '.join([str((ori*np.pi)/180) for ori in self.orientations[:1]]) +' ! Rotation of crystal: Bunge-Euler angles in rad\n' )
+            self.content.append('    ' + ' '.join(["{:.6E}".format(Decimal(str((ori*np.pi)/180))) for ori in self.orientations[:1]]) +' ! Rotation of crystal: Bunge-Euler angles in rad\n' )
             #Create elasticity tensor:
             if len(self.elasticitys) < 2:
                 raise ValueError('too few elasticity tensors given, 2 needed')
@@ -83,7 +83,7 @@ class Material:
             self.content.append('  si           !switch interpolation function, Currently No. 1 and 5 implemented, default is 5\n')
             self.content.append('  dd  G  L  M  ! G-Interface energy density, L-Controls width of transition zone, M-Mobility parameter\n')
             #append orientations
-            self.content.append('  ' + ' '.join([str((ori*np.pi)/180) for ori in self.orientations]) +'\n' )
+            self.content.append('  ' + ' '.join(["{:.6E}".format(Decimal(str((ori*np.pi)/180))) for ori in self.orientations]) +'\n' )
             #Create elasticity tensor:
             if len(self.elasticitys) < 4:
                 raise ValueError('too few elasticity tensors given, 4 needed')
@@ -111,7 +111,7 @@ class Material:
             self.content.append('  si           !switch interpolation function, Currently No. 1 and 5 implemented, default is 5\n')
             self.content.append('  dd  G  L  M  ! G-Interface energy density, L-Controls width of transition zone, M-Mobility parameter\n')
             #append orientations
-            self.content.append('  ' + ' '.join([str((ori*np.pi)/180) for ori in self.orientations]) +'\n' )
+            self.content.append('  ' + ' '.join(["{:.6E}".format(Decimal(str((ori*np.pi)/180)))for ori in self.orientations]) +'\n' )
             #Create elasticity tensor:
             if len(self.elasticitys) < 2:
                 raise ValueError('too few elasticity tensors given, 2 needed')
