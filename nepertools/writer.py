@@ -46,7 +46,7 @@ class FEAPWriter:
                 if self.mat_variants == 3:
                     f.write('  ' + str(len(self.mesh.nodes)) + ' ' + str(len(self.mesh.elems)) + ' ' + str(len(self.mesh.elsets)) + ' 3 7 8 0 0\n')
                 f.write('\n')
-                f.write('!-------------------Sturcture Informations--------------------------')
+                f.write('!-------------------Sturcture Informations--------------------------\n')
                 f.write('!edge length:          ' + str(self.cf['general']['scale']) + '\n')
                 f.write('!elements   :          ' + str(np.cbrt(len(self.mesh.elems))) + '\n')
                 f.write('!martensite variants:  ' + str(self.cf['general']['mat_variants']) + '\n')
