@@ -80,8 +80,8 @@ class Material:
         elif mat_var == 3:
             self.content.append('  USER,' + str(user_element_number) + '\n')
             self.content.append('  sr st        !switch irreveresibility (1-on,else-off, Tolerance\n')
-            self.content.append('  si           !switch interpolation function, Currently No. 1 and 5 implemented, default is 5')
-            self.content.append('  dd  G  L  M  ! G-Interface energy density, L-Controls width of transition zone, M-Mobility parameter')
+            self.content.append('  si           !switch interpolation function, Currently No. 1 and 5 implemented, default is 5\n')
+            self.content.append('  dd  G  L  M  ! G-Interface energy density, L-Controls width of transition zone, M-Mobility parameter\n')
             #append orientations
             self.content.append('  ' + ' '.join([str((ori*np.pi)/180) for ori in self.orientations]) +'\n' )
             #Create elasticity tensor:

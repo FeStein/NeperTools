@@ -360,9 +360,9 @@ class NucleusWriter():
                 f.write("  OPTI\n")
                 f.write("  INITial,disp\n")
                 f.write("end\n")
-                f.write('  ' + str(self.nucleus_model.mesh.nodes[0].id) + '     1  1e-20 0.0 0.0   0 0 0 0 0 0 0 0 0 0 0\n')
+                f.write('  ' + str(self.nucleus_model.mesh.nodes[0].id) + '     1  0.0 0.0 0.0   1e-20 0 0 0 0 0 0 0 0 0 0\n')
                 f.write('     0\n')
-                f.write('  ' + str(self.nucleus_model.mesh.nodes[-1].id) + '     0  1e-20 0.0 0.0   0 0 0 0 0 0 0 0 0 0 0\n')
+                f.write('  ' + str(self.nucleus_model.mesh.nodes[-1].id) + '     0  0.0 0.0 0.0   1e-20 0 0 0 0 0 0 0 0 0 0\n')
                 f.write('     0\n')
                 written_node_set = set()
                 for np in self.nucleus_model.np_list:
