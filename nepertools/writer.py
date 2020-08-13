@@ -347,8 +347,8 @@ class NucleusWriter():
                 if self.cf['nmodel']['lock_bound']:
                     f.write("!BOUNdary\n")
                     for node in self.nucleus_model.dup_node_list:
-                        f.write('!  ' + str(node.id) + ' 0            0 0 0   1 1 1 1 1 1 1 1 1\n')
-                        f.write('!  1 1 1 \n')
+                        f.write('!  ' + str(node.id) + ' 0            0 0 0   1 1 1 1 1 1 1 1 1 1 1\n')
+                        f.write('!  1 \n')
                     f.write('\n')
                 f.write('end\n')
                 f.write('\n')
