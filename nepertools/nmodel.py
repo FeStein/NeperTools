@@ -625,6 +625,8 @@ class NucleusModel3D():
         ax.set_xlabel('x')
         ax.set_ylabel('y')
         ax.set_zlabel('z')
+        plt.subplots_adjust(top = 1, bottom = 0, right = 1, left = 0, hspace = 0, wspace = 0)
+        plt.margins(0,0,0)
         if path != None:
             plt.savefig(path)
         plt.show()
